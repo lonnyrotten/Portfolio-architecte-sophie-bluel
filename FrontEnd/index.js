@@ -26,4 +26,31 @@ fetch('http://localhost:5678/api/works')
         // Variable qui contient les données présentes dans l'API
         const projects = works;
         genererGallery(projects);
+
+        // Fonctions de filtrage pour les boutons
+const boutonObjets = document.querySelector(".btn_objets");
+
+boutonObjets.addEventListener("click", function () {
+    const projectsObjets = projects.filter((project) => {
+        return project.categoryId === 1 
+     });
+     genererGallery(projectsObjets)
+});
+const boutonAppartements = document.querySelector(".btn_appartements");
+
+boutonAppartements.addEventListener("click", function () {
+    const projectsAppartements = projects.filter((project) => {
+        return project.categoryId === 2;
+    });
+     genererGallery(projectsObjets)
+});
+
+const boutonHotelsResto = document.querySelector(".btn_hotels_restaurants");
+
+boutonHotelsResto.addEventListener("click", function () {
+    const projectsHotelsResto = projects.filter((project) => {
+        return project.categoryId === 3 
+     });
+     genererGallery(projectsHotelsResto)
+});
     });
