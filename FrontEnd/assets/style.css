@@ -141,6 +141,10 @@ button {
     font-size: 1rem;
     padding: 0.5% 1.75%;
 }
+button:hover{
+	background-color: #1D6154;
+	color: #FFFF;
+}
 .gallery {
 	width: 100%;
 	display: grid;
