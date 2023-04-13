@@ -9,7 +9,6 @@
 	<link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=Work+Sans&display=swap" rel="stylesheet">
 	<meta name="description" content="">
 	<link rel="stylesheet" href="./assets/login.css">
-	<script type="text/javascript" src=""></script>
 </head>
 <body>
     <header>
@@ -26,12 +25,12 @@
     <main>
         <section>
             <h2>Log In</h2>
-            <form action="#" method="post">
+            <form action="#" method="post" id="login_box">
                 <label for="email">E-mail</label>
-                <input type="email" name="email">
+                <input type="email" name="email" id="email">
                 <label for="password">Mot de passe</label>
-                <input type="password" name="password">
-                <input type="submit" value="Se connecter">
+                <input type="password" name="password" id="password">
+                <input type="submit" value="Se connecter" id="submit_btn">
             </form>
             <a href="#">Mot de passe oublié</a>
         </section>
@@ -44,4 +43,5 @@
         </nav>
     </footer>
 </body>
+<script type="text/javascript" src="/FrontEnd/login.js"></script>
 </html>
