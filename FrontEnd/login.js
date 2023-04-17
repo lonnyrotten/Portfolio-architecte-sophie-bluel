@@ -1,5 +1,6 @@
 const loginBox = document.querySelector("#login_box");
 async function loginSubmit(event) {
+    event.preventDefault();
     // Variables qui contiennent les valeurs rentrées dans le formulaire de connexion de la page.
     const email = document.getElementById("email").value;
     const password = document.getElementById("password").value;
@@ -14,14 +15,15 @@ async function loginSubmit(event) {
         })
     })
     .then ((response) => {
-        if (response.status === 200) {
-            result = response.json();
-            localStorage.setItem("sessionToken", result.token);
-            console.log("sessionToken");
-            window.location.href="index.html";
+        if (response.ok) {
+            return response.json();
         } else if (response.status !== 200) {
             console.log("error");
         }
     })
+    .then((data) => {
+        localStorage.setItem("sessionToken", JSON.stringify(data.token));
+        window.location.href="index.html";
+    })
 }
-loginBox.addEventListener("submit", loginSubmit());
+loginBox.addEventListener("submit", loginSubmit);
