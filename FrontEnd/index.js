@@ -7,7 +7,7 @@ async function getWorks() {
             const data = await res.json();
             works = data;
             console.log(works);
-            genererGallery(works);
+            generateGallery(works);
         } else {
             throw new Error("Didn't fetch projects.")
         }
@@ -23,6 +23,7 @@ async function getCategories() {
             const data = await res.json();
             categories = data;
             console.log(categories);
+            generateBtnsFiltres(categories);
         } else {
             throw new Error("Didn't fetch categories.")
         }
@@ -31,13 +32,12 @@ async function getCategories() {
     }
 }
 
-getWorks()
-
-getCategories().then(categories => genererBtnsFiltres(categories));
+getWorks();
+getCategories();
 
 
 // Fonction qui génère les éléments grâce à l'API
-function genererGallery(projects){
+function generateGallery(projects){
     // Commande qui supprime les éléments insérés par le fichier HTML
     document.querySelector(".gallery").innerHTML = "";
     projects.forEach(project => {
@@ -59,7 +59,7 @@ function genererGallery(projects){
     })
 }
 
-function genererBtnsFiltres(){
+function generateBtnsFiltres(){
     categories.forEach(category => {
         const filterBox = document.querySelector(".buttons");
         const filtre = document.createElement("button");
@@ -75,9 +75,46 @@ function genererBtnsFiltres(){
         })
 }
 
-document.addEventListener('DOMContentLoaded', function() {
-    if (userToken) {
-        const editBar = document.querySelector(".user-edit-bar");
-        editBar.style.display = "flex";
+function generateEditingHeader (){
+    const editBar = document.querySelector(".user-edit-bar");
+    const editModal = document.createElement("a");
+    const editBtnConfirm = document.createElement("button");
+    editModal.innerHTML =  '<i class="fa-regular fa-pen-to-square" style="color: #ffff;"></i>Mode édition';
+    editBtnConfirm.innerHTML = "Publier les changements";
+    editBtnConfirm.setAttribute("class", "btn-confirm-edit");
+    editBar.appendChild(editModal);
+    editBar.appendChild(editBtnConfirm);
+    editBar.style.display = "flex"
+}
+
+function generateEditLinks (){
+    const modalAltBox = document.querySelector(".modal-alt");
+    const modalAltBox2 = document.querySelector(".modal-alt2");
+    const editModalAlt = document.createElement("a");
+    editModalAlt.innerHTML = '<i class="fa-regular fa-pen-to-square"></i>Modifier';
+    modalAltBox.appendChild(editModalAlt);
+    modalAltBox2.appendChild(editModalAlt);
+}
+
+function logout (){
+    sessionStorage.removeItem(userToken);
+}
+
+function logoutLink (){
+    const logLink = document.getElementById("login/logout");
+    logLink.innerHTML = "logout";
+    logLink.addEventListener("click", logout());
+}
+
+function loadEditingMode() {
+    const filterBox = document.querySelector(".buttons");
+    filterBox.style.display = "none";
+
+    generateEditingHeader();
+    generateEditLinks();
+    logoutLink();
+}
+
+if (userToken) {
+    loadEditingMode();
     }
-  });
