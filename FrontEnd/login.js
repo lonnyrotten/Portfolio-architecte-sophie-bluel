@@ -17,12 +17,15 @@ async function loginSubmit(event) {
     .then ((response) => {
         if (response.ok) {
             return response.json();
-        } else if (response.status !== 200) {
+        } else if (response.status !== 200 && (!email || !password)) {
+            document.querySelector(".error-message").innerHTML = "Saisissez un identifiant et un mot de passe.";
+        } else if (response.status !== 200 && email && password) {
             console.log("error");
+            document.querySelector(".error-message").innerHTML = "Erreur dans l'identifiant ou le mot de passe."
         }
     })
-    .then((data) => {
-        localStorage.setItem("sessionToken", JSON.stringify(data.token));
+    .then((userInfo) => {
+        sessionStorage.setItem("sessionUserInfo", JSON.stringify(userInfo.token));
         window.location.href="index.html";
     })
 }

@@ -1,5 +1,4 @@
-let works;
-let categories;
+const userToken = sessionStorage.getItem("sessionUserInfo");
 
 async function getWorks() {
     try {
@@ -68,10 +67,17 @@ function genererBtnsFiltres(){
         filtre.setAttribute("id","btn-" + category.name.toLowerCase().split(" ")[0])
         filterBox.appendChild(filtre);
         filtre.addEventListener("click", () => {
-            document.querySelectorAll("button").style.backgroundColor = "#1D6154"
+            document.querySelector("button").style.backgroundColor = "#1D6154"
             const filteredProjects = works.filter(work => work.categoryId === category.id);
             console.log(filteredProjects);
             genererGallery(filteredProjects);
         })
         })
 }
+
+document.addEventListener('DOMContentLoaded', function() {
+    if (userToken) {
+        const editBar = document.querySelector(".user-edit-bar");
+        editBar.style.display = "flex";
+    }
+  });

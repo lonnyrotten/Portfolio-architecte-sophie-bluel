@@ -49,15 +49,50 @@ table {
 /** end reset css**/
 body {
 	max-width: 1140px;
-	margin:auto;
+	margin: auto;
 	font-family: 'Work Sans' ;
 	font-size: 14px;
 }
+
 header {
+	margin: 0 0 100px 0
+}
+
+.user-edit-bar {
+	background-color: black;
+	width: 100%;
+	padding: 1%;
+	display: none;
+	gap: 1%;
+	align-items: center;
+	justify-content: center;
+}
+
+.user-edit-bar a {
+	color: white;
+}
+
+.fa-regular {
+	padding: 0.5em;
+}
+
+.btn-confirm-edit {
+	font-family: 'Work Sans';
+	background-color: white;
+    border-radius: 25px;
+    border: 1px solid #1D6154;
+    font-weight: bold;
+    color: black;
+    font-size: 0.75rem;
+    padding: 0.5% 1.75%;
+}
+
+.header-box {
 	display: flex;
 	justify-content: space-between;
 	margin: 50px 0
 }
+
 section {
 	margin: 50px 0
 }
@@ -94,7 +129,7 @@ nav li {
 	padding: 0 10px;
 	font-size: 1.2em;
 }
-nav a {
+a {
 	text-decoration:none;
 	color: black;
 }
