@@ -8,6 +8,7 @@ async function getWorks() {
             works = data;
             console.log(works);
             generateGallery(works);
+            generateModalGallery(works);
         } else {
             throw new Error("Didn't fetch projects.")
         }
@@ -33,6 +34,9 @@ async function getCategories() {
 }
 
 getWorks();
+document.querySelector(".btn-tous").onclick = () => {
+    getWorks();
+}
 getCategories();
 
 
@@ -50,6 +54,7 @@ function generateGallery(projects){
         const projectCaption = document.createElement("figcaption");
         projectCaption.innerText = project.title;
         projectElement.setAttribute("class", "project")
+        projectElement.setAttribute("id", project.id);
         projectElement.setAttribute("data-category", project.categoryId)
         // Commandes qui rattache les images et les légendes dans l'API aux balises HTML
         projectElement.appendChild(imageProject);
@@ -66,38 +71,38 @@ function generateBtnsFiltres(){
         filtre.innerText = category.name;
         filtre.setAttribute("id","btn-" + category.name.toLowerCase().split(" ")[0])
         filterBox.appendChild(filtre);
-        filtre.addEventListener("click", () => {
+        filtre.onclick = () => {
             document.querySelector("button").style.backgroundColor = "#1D6154"
             const filteredProjects = works.filter(work => work.categoryId === category.id);
             console.log(filteredProjects);
-            genererGallery(filteredProjects);
-        })
+            generateGallery(filteredProjects);
+        }
         })
 }
 
 function generateEditingHeader (){
     const editBar = document.querySelector(".user-edit-bar");
-    const editModal = document.createElement("a");
-    const editBtnConfirm = document.createElement("button");
-    editModal.innerHTML =  '<i class="fa-regular fa-pen-to-square" style="color: #ffff;"></i>Mode édition';
-    editBtnConfirm.innerHTML = "Publier les changements";
-    editBtnConfirm.setAttribute("class", "btn-confirm-edit");
-    editBar.appendChild(editModal);
-    editBar.appendChild(editBtnConfirm);
+    const editingMode = document.createElement("p");
+    const editConfirmBtn = document.createElement("button");
+    editingMode.innerHTML =  '<i class="fa-regular fa-pen-to-square" style="color: #ffff;"></i>Mode édition';
+    editConfirmBtn.innerHTML = "Publier les changements";
+    editConfirmBtn.setAttribute("class", "btn-confirm-edit");
+    editBar.appendChild(editingMode);
+    editBar.appendChild(editConfirmBtn);
     editBar.style.display = "flex"
 }
 
 function generateEditLinks (){
-    const modalAltBox = document.querySelector(".modal-alt");
-    const modalAltBox2 = document.querySelector(".modal-alt2");
-    const editModalAlt = document.createElement("a");
-    editModalAlt.innerHTML = '<i class="fa-regular fa-pen-to-square"></i>Modifier';
-    modalAltBox.appendChild(editModalAlt);
-    modalAltBox2.appendChild(editModalAlt);
+    const modalLinkBox = document.querySelector(".open-modal-link");
+    const modalLink = document.createElement("a");
+    modalLink.setAttribute("class","modal-link");
+    modalLink.innerHTML = '<i class="fa-regular fa-pen-to-square"></i>modifier';
+    modalLinkBox.appendChild(modalLink);
 }
 
 function logout (){
     sessionStorage.removeItem(userToken);
+    window.location.reload;
 }
 
 function logoutLink (){
@@ -106,7 +111,7 @@ function logoutLink (){
     logLink.addEventListener("click", logout());
 }
 
-function loadEditingMode() {
+function loadEditingMode (){
     const filterBox = document.querySelector(".buttons");
     filterBox.style.display = "none";
 
@@ -115,6 +120,44 @@ function loadEditingMode() {
     logoutLink();
 }
 
+function generateModalGallery(projects){
+    projects.forEach(project => {
+        const modalGallery = document.querySelector(".modal-gallery");
+        const modalProjectElement = document.createElement("figure");
+        const imageProjectModal = document.createElement("img");
+        imageProjectModal.src = project.imageUrl;
+        const moveProjectBtn = document.createElement("button");
+        const deleteProjectBtn = document.createElement("button");
+        const modalProjectCaption = document.createElement("figcaption");
+        moveProjectBtn.innerHTML = '<i class="fa-solid fa-arrows-up-down-left-right"></i>';
+        deleteProjectBtn.innerHTML = '<i class="fa-regular fa-trash-can"></i>';
+        modalProjectCaption.innerText = "éditer";
+        modalProjectElement.setAttribute("class", "modal-project");
+        modalProjectElement.setAttribute("id", project.id);
+        modalProjectElement.setAttribute("data-category", project.categoryId);
+        moveProjectBtn.setAttribute("class", "move-button");
+        deleteProjectBtn.setAttribute("class", "delete-button");
+        modalProjectElement.appendChild(moveProjectBtn);
+        modalProjectElement.appendChild(deleteProjectBtn);
+        modalProjectElement.appendChild(imageProjectModal);
+        modalProjectElement.appendChild(modalProjectCaption);
+        modalGallery.appendChild(modalProjectElement);
+    })
+}
+
+function loadModal (){
+    const modalWindow = document.querySelector(".modal-window")
+    const openModal = document.querySelector(".modal-link");
+    const closeModal = document.querySelector(".close-modal")
+    openModal.onclick = () => {
+        modalWindow.style.display = "flex";
+    }
+    closeModal.onclick = () => {
+        modalWindow.style.display = "none";
+    }
+}
+
 if (userToken) {
     loadEditingMode();
+    loadModal();
     }
