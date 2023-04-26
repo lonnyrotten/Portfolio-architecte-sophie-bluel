@@ -1,52 +1,34 @@
+const projectGallery = document.querySelector(".portfolio-gallery");
+const projectsInGallery = projectGallery.querySelectorAll("figure");
+const boutonTous = document.getElementsByClassName("btn-tous");
+const hiddenGallery = document.querySelector(".trash-div");
 const userToken = sessionStorage.getItem("sessionUserInfo");
 
 async function getWorks() {
+    const url = "http://localhost:5678/api/works" ;
     try {
-        const res = await fetch("http://localhost:5678/api/works");
-        if (res.ok) {
-            const data = await res.json();
-            works = data;
-            console.log(works);
-            generateGallery(works);
-            generateModalGallery(works);
-        } else {
-            throw new Error("Didn't fetch projects.")
-        }
+        const data = await fetch(url);
+        return await data.json();
     }catch(err) {
         console.error(err)
     }
 }
 
 async function getCategories() {
+    const url = "http://localhost:5678/api/categories";
     try {
-        const res = await fetch("http://localhost:5678/api/categories");
-        if (res.ok) {
-            const data = await res.json();
-            categories = data;
-            console.log(categories);
-            generateBtnsFiltres(categories);
-        } else {
-            throw new Error("Didn't fetch categories.")
-        }
+        const data = await fetch(url);
+        return await data.json();
     }catch(err) {
         console.error(err)
     }
 }
 
-getWorks();
-document.querySelector(".btn-tous").onclick = () => {
-    getWorks();
-}
-getCategories();
-
-
 // Fonction qui génère les éléments grâce à l'API
-function generateGallery(projects){
-    // Commande qui supprime les éléments insérés par le fichier HTML
-    document.querySelector(".gallery").innerHTML = "";
-    projects.forEach(project => {
-        // Commande qui sélectionne la balise HTML qui recevra les projets de l'architecte
-        const projectGallery = document.querySelector(".gallery");
+async function generateGallery(){
+    const works = await getWorks();
+    hiddenGallery.append(...projectGallery.childNodes);
+    works.forEach(project => {
         // Commandes qui génère les balises HTML qui constitue les projets de l'architecte dans le DOM
         const projectElement = document.createElement("figure");
         const imageProject = document.createElement("img");
@@ -64,32 +46,63 @@ function generateGallery(projects){
     })
 }
 
-function generateBtnsFiltres(){
+function filterButton (property, value){
+    projectGallery.querySelectorAll("figure").forEach ((project) => {
+        if (project.getAttribute(property) === value) {
+            projectGallery.appendChild(project);
+        } else {
+            hiddenGallery.appendChild(project);
+        }
+    })
+    hiddenGallery.querySelectorAll("figure").forEach ((project) => {
+        if (project.getAttribute(property) === value) {
+            projectGallery.appendChild(project);
+        } else {
+            hiddenGallery.appendChild(project);
+        }
+    })
+}
+
+async function generateBtnsFiltres(){
+    const categories = await getCategories();
     categories.forEach(category => {
         const filterBox = document.querySelector(".buttons");
         const filtre = document.createElement("button");
         filtre.innerText = category.name;
         filtre.setAttribute("id","btn-" + category.name.toLowerCase().split(" ")[0])
         filterBox.appendChild(filtre);
-        filtre.onclick = () => {
-            document.querySelector("button").style.backgroundColor = "#1D6154"
-            const filteredProjects = works.filter(work => work.categoryId === category.id);
-            console.log(filteredProjects);
-            generateGallery(filteredProjects);
-        }
         })
+    const boutonObjets = document.getElementById("btn-objets");
+    const boutonAppartements = document.getElementById("btn-appartements");
+    const boutonHotels = document.getElementById("btn-hotels");
+    boutonObjets.onclick = function(){ 
+        filterButton("data-category", "1"); 
+    };
+    boutonAppartements.onclick = function(){ 
+        filterButton("data-category", "2"); 
+    };
+    boutonHotels.onclick = function(){ 
+        filterButton("data-category", "3"); 
+    };
 }
 
+generateGallery();
+boutonTous[0].onclick = function(){
+    filterButton("class", "project");
+};
+generateBtnsFiltres();
+
 function generateEditingHeader (){
-    const editBar = document.querySelector(".user-edit-bar");
+    const editBar = document.getElementsByClassName(".user-edit-bar");
     const editingMode = document.createElement("p");
     const editConfirmBtn = document.createElement("button");
     editingMode.innerHTML =  '<i class="fa-regular fa-pen-to-square" style="color: #ffff;"></i>Mode édition';
     editConfirmBtn.innerHTML = "Publier les changements";
     editConfirmBtn.setAttribute("class", "btn-confirm-edit");
+    editBar.style.display = "flex";
     editBar.appendChild(editingMode);
     editBar.appendChild(editConfirmBtn);
-    editBar.style.display = "flex"
+    
 }
 
 function generateEditLinks (){
@@ -114,7 +127,6 @@ function logoutLink (){
 function loadEditingMode (){
     const filterBox = document.querySelector(".buttons");
     filterBox.style.display = "none";
-
     generateEditingHeader();
     generateEditLinks();
     logoutLink();
@@ -146,9 +158,9 @@ function generateModalGallery(projects){
 }
 
 function loadModal (){
-    const modalWindow = document.querySelector(".modal-window")
+    const modalWindow = document.querySelector(".modal-window");
     const openModal = document.querySelector(".modal-link");
-    const closeModal = document.querySelector(".close-modal")
+    const closeModal = document.querySelector(".close-modal");
     openModal.onclick = () => {
         modalWindow.style.display = "flex";
     }
@@ -160,4 +172,11 @@ function loadModal (){
 if (userToken) {
     loadEditingMode();
     loadModal();
+    const modal1 = document.querySelector(".modal-wrapper");
+    const modal2 = document.querySelector(".modal-wrapper2");
+    const switchModal = document.querySelector(".add-photos-btn");
+    switchModal.onclick = function (){
+        modal1.style.display = "none"
+        modal2.style.display = "flex"
+    }
     }

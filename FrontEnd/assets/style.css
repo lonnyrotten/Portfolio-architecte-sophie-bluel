@@ -205,7 +205,6 @@ li:hover,a:hover {
 }
 
 .move-button {
-	display: none;
 	font-size: 9px;
     padding: 0.35%;
 	margin: 0.35% 2%;
@@ -240,6 +239,10 @@ li:hover,a:hover {
     font-size: 14px;
     color: #D65353;
     border: none;
+}
+
+.modal-wrapper2 {
+	display: none;
 }
 
 #introduction {
@@ -294,7 +297,7 @@ button {
 	background-color: #1D6154;
 	color: #FFFF;
 }
-.gallery {
+.portfolio-gallery {
 	width: 100%;
 	display: grid;
 	grid-template-columns: 1fr 1fr 1fr;
@@ -302,7 +305,7 @@ button {
 	grid-row-gap: 20px;
 }
 
-.gallery img {
+.portfolio-gallery img {
 	width: 100%;
 
 }
@@ -355,3 +358,6 @@ footer nav ul {
 	margin: 2em
 }
 
+.trash-div {
+	display: none;
+}

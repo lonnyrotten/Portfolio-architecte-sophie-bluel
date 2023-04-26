@@ -43,6 +43,28 @@
 					<button class="delete-gallery-btn">Supprimer la galerie</button>
 				</div>
 			</div>
+			<div class="modal-wrapper2">
+				<div class="modal-header">
+					<button class="back">&#8592;</button>
+					<button class="close-modal">&times;</button>
+					<h3>Ajout photo</h3>
+				</div>
+				<div class="modal-body">
+					<form action="" method="post">
+						<label for="title">Titre</label>
+						<input type="text" name="title" id="photo-title-input">
+						<label for="category">Catégorie</label>
+						<select name="dropdown" id="category-dropd">
+							<option value="value1">Objets</option>
+							<option value="value2">Appartements</option>
+							<option value="value3">Hotels & Restaurants</option>
+						</select>
+					</form>
+				</div>
+				<div class="modal-footer">
+					<button class="add-photos-confirm">Valider</button>
+				</div>
+			</div>
 		</div>
 	</aside>
 	<section id="introduction">
@@ -60,12 +82,12 @@
 	<section id="portfolio">
 		<div class="portfolio-title">
 			<h2>Mes Projets</h2>
-		<div class="open-modal-button"></div>
+		<div class="open-modal-link"></div>
 		</div>
 		<div class="buttons">
 		<button class="btn-tous">Tous</button>
 		</div>
-		<div class="gallery">
+		<div class="portfolio-gallery">
 			<figure>
 				<img src="assets/images/abajour-tahina.png" alt="Abajour Tahina">
 				<figcaption>Abajour Tahina</figcaption>
