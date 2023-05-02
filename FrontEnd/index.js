@@ -1,7 +1,8 @@
-const projectGallery = document.querySelector(".portfolio-gallery");
+const projectGallery = document.getElementsByClassName("portfolio-gallery")[0];
 const projectsInGallery = projectGallery.querySelectorAll("figure");
-const boutonTous = document.getElementsByClassName("btn-tous");
-const hiddenGallery = document.querySelector(".trash-div");
+const boutonTous = document.getElementsByClassName("btn-tous")[0];
+const hiddenGallery = document.getElementsByClassName("trash-div")[0];
+const modalGallery = document.getElementsByClassName("modal-body")[0];
 const userToken = sessionStorage.getItem("sessionUserInfo");
 
 async function getWorks() {
@@ -44,18 +45,43 @@ async function generateGallery(){
         // Commande qui rattache les projets à la balise HTML qui doit les contenir
         projectGallery.appendChild(projectElement);
     })
+    function generateModalGallery (){
+        const clonedGallery = projectGallery.cloneNode(true);
+        clonedGallery.classList.remove("portfolio-gallery");
+        clonedGallery.classList.add("modal-gallery")
+        const modalProjects = clonedGallery.querySelectorAll("figure");
+        modalProjects.forEach(figure => {
+            figure.classList.remove("project");
+            figure.classList.add("modal-project");
+            const modalProjectCaptions = figure.querySelector("figcaption");
+	        modalProjectCaptions.textContent = "éditer";
+        });
+        modalProjects.forEach(figure => {
+            const moveProjectBtn = document.createElement("button");
+            const deleteProjectBtn = document.createElement("button");
+            moveProjectBtn.innerHTML = '<i class="fa-solid fa-arrows-up-down-left-right"></i>';
+            deleteProjectBtn.innerHTML = '<i class="fa-regular fa-trash-can"></i>';
+            moveProjectBtn.classList.add("move-button");
+            deleteProjectBtn.classList.add("delete-button");
+	        deleteProjectBtn.setAttribute("id", figure.id);
+	        figure.appendChild(moveProjectBtn);
+	        figure.appendChild(deleteProjectBtn);
+        });
+        modalGallery.appendChild(clonedGallery);
+    }
+    generateModalGallery();
 }
 
-function filterButton (property, value){
+function filterButton (attribute, value){
     projectGallery.querySelectorAll("figure").forEach ((project) => {
-        if (project.getAttribute(property) === value) {
+        if (project.getAttribute(attribute) === value) {
             projectGallery.appendChild(project);
         } else {
             hiddenGallery.appendChild(project);
         }
     })
     hiddenGallery.querySelectorAll("figure").forEach ((project) => {
-        if (project.getAttribute(property) === value) {
+        if (project.getAttribute(attribute) === value) {
             projectGallery.appendChild(project);
         } else {
             hiddenGallery.appendChild(project);
@@ -87,13 +113,15 @@ async function generateBtnsFiltres(){
 }
 
 generateGallery();
-boutonTous[0].onclick = function(){
+
+boutonTous.onclick = function(){
     filterButton("class", "project");
 };
+
 generateBtnsFiltres();
 
 function generateEditingHeader (){
-    const editBar = document.getElementsByClassName(".user-edit-bar");
+    const editBar = document.getElementsByClassName("user-edit-bar")[0];
     const editingMode = document.createElement("p");
     const editConfirmBtn = document.createElement("button");
     editingMode.innerHTML =  '<i class="fa-regular fa-pen-to-square" style="color: #ffff;"></i>Mode édition';
@@ -132,35 +160,10 @@ function loadEditingMode (){
     logoutLink();
 }
 
-function generateModalGallery(projects){
-    projects.forEach(project => {
-        const modalGallery = document.querySelector(".modal-gallery");
-        const modalProjectElement = document.createElement("figure");
-        const imageProjectModal = document.createElement("img");
-        imageProjectModal.src = project.imageUrl;
-        const moveProjectBtn = document.createElement("button");
-        const deleteProjectBtn = document.createElement("button");
-        const modalProjectCaption = document.createElement("figcaption");
-        moveProjectBtn.innerHTML = '<i class="fa-solid fa-arrows-up-down-left-right"></i>';
-        deleteProjectBtn.innerHTML = '<i class="fa-regular fa-trash-can"></i>';
-        modalProjectCaption.innerText = "éditer";
-        modalProjectElement.setAttribute("class", "modal-project");
-        modalProjectElement.setAttribute("id", project.id);
-        modalProjectElement.setAttribute("data-category", project.categoryId);
-        moveProjectBtn.setAttribute("class", "move-button");
-        deleteProjectBtn.setAttribute("class", "delete-button");
-        modalProjectElement.appendChild(moveProjectBtn);
-        modalProjectElement.appendChild(deleteProjectBtn);
-        modalProjectElement.appendChild(imageProjectModal);
-        modalProjectElement.appendChild(modalProjectCaption);
-        modalGallery.appendChild(modalProjectElement);
-    })
-}
-
 function loadModal (){
-    const modalWindow = document.querySelector(".modal-window");
-    const openModal = document.querySelector(".modal-link");
-    const closeModal = document.querySelector(".close-modal");
+    const modalWindow = document.getElementsByClassName("modal-window")[0];
+    const openModal = document.getElementsByClassName("modal-link")[0];
+    const closeModal = document.getElementsByClassName("close-modal")[0];
     openModal.onclick = () => {
         modalWindow.style.display = "flex";
     }
@@ -169,14 +172,21 @@ function loadModal (){
     }
 }
 
+
 if (userToken) {
     loadEditingMode();
     loadModal();
-    const modal1 = document.querySelector(".modal-wrapper");
-    const modal2 = document.querySelector(".modal-wrapper2");
-    const switchModal = document.querySelector(".add-photos-btn");
-    switchModal.onclick = function (){
+    generateModalGallery();
+    const modal1 = document.getElementsByClassName("modal-wrapper")[0];
+    const modal2 = document.getElementsByClassName("modal-wrapper2")[0];
+    const switchModal = document.getElementsByClassName("add-photos-btn")[0];
+    switchModal.onclick = () => {
         modal1.style.display = "none"
         modal2.style.display = "flex"
     }
+    const backArrow = document.getElementsByClassName("back")[0];
+    backArrow.onclick = () => {
+        modal2.style.display = "none"
+        modal1.style.display = "block"
     }
+}

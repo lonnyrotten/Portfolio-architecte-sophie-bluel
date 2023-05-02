@@ -36,7 +36,6 @@
 					<h3>Galerie photo</h3>
 				</div>
 				<div class="modal-body">
-					<div class="modal-gallery"></div>
 				</div>
 				<div class="modal-footer">
 					<button class="add-photos-btn">Ajouter une photo</button>
@@ -49,8 +48,9 @@
 					<button class="close-modal">&times;</button>
 					<h3>Ajout photo</h3>
 				</div>
-				<div class="modal-body">
-					<form action="" method="post">
+				<div class="modal-body2">
+					<form action="" method="post" class="new-project">
+						<input type="file" accept="image/png image/jpg" name="image">
 						<label for="title">Titre</label>
 						<input type="text" name="title" id="photo-title-input">
 						<label for="category">Catégorie</label>
@@ -60,6 +60,7 @@
 							<option value="value3">Hotels & Restaurants</option>
 						</select>
 					</form>
+					<p class="form-error-message"></p>
 				</div>
 				<div class="modal-footer">
 					<button class="add-photos-confirm">Valider</button>
