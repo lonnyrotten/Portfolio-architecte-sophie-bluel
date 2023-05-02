@@ -45,6 +45,7 @@ async function generateGallery(){
         // Commande qui rattache les projets à la balise HTML qui doit les contenir
         projectGallery.appendChild(projectElement);
     })
+
     function generateModalGallery (){
         const clonedGallery = projectGallery.cloneNode(true);
         clonedGallery.classList.remove("portfolio-gallery");
@@ -66,8 +67,26 @@ async function generateGallery(){
 	        deleteProjectBtn.setAttribute("id", figure.id);
 	        figure.appendChild(moveProjectBtn);
 	        figure.appendChild(deleteProjectBtn);
+            deleteProjectBtn.onclick = async () => {
+                const projectId = figure.id
+                if (deleteProjectBtn.id === projectId){
+                    console.log(userToken);
+                    fetch(`http://localhost:5678/api/works/${projectId}`, {
+                        method: 'DELETE',
+                        headers : {"Authorization": `Bearer ${userToken}`
+                        }
+                    }
+                    )
+                    .then(res => {
+                        if (res.ok){
+                            figure.remove();
+                        }
+                    })
+                }
+            }
         });
         modalGallery.appendChild(clonedGallery);
+        
     }
     generateModalGallery();
 }
@@ -176,7 +195,6 @@ function loadModal (){
 if (userToken) {
     loadEditingMode();
     loadModal();
-    generateModalGallery();
     const modal1 = document.getElementsByClassName("modal-wrapper")[0];
     const modal2 = document.getElementsByClassName("modal-wrapper2")[0];
     const switchModal = document.getElementsByClassName("add-photos-btn")[0];
