@@ -25,7 +25,7 @@ async function loginSubmit(event) {
         }
     })
     .then((userInfo) => {
-        sessionStorage.setItem("sessionUserInfo", JSON.stringify(userInfo.token));
+        sessionStorage.setItem("sessionUserInfo", userInfo.token);
         window.location.href="index.html";
     })
 }

@@ -49,15 +49,20 @@
 					<h3>Ajout photo</h3>
 				</div>
 				<div class="modal-body2">
-					<form action="" method="post" class="new-project">
-						<input type="file" accept="image/png image/jpg" name="image">
+					<form action="http://localhost:5678/api/works" method="post" class="new-project">
+						<button onclick="document.getElementById('new-project-file').click()" id="file-upload">
+							<img src="/FrontEnd/assets/images/picture-svgrepo-com 1.png" alt="default-photo" id="default-photo">
+							<span id="file-upload-text">+ Ajouter photo</span>
+							<span id="file-upload-max-size">jpg, png : 4mo max</span>
+						</button>
+						<input type="file" accept=".png, .jpg" name="image" id="new-project-file">
 						<label for="title">Titre</label>
 						<input type="text" name="title" id="photo-title-input">
 						<label for="category">Catégorie</label>
-						<select name="dropdown" id="category-dropd">
-							<option value="value1">Objets</option>
-							<option value="value2">Appartements</option>
-							<option value="value3">Hotels & Restaurants</option>
+						<select name="category" id="category-dropd">
+							<option value="1">Objets</option>
+							<option value="2">Appartements</option>
+							<option value="3">Hotels & Restaurants</option>
 						</select>
 					</form>
 					<p class="form-error-message"></p>

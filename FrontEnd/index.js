@@ -70,15 +70,14 @@ async function generateGallery(){
             deleteProjectBtn.onclick = async () => {
                 const projectId = figure.id
                 if (deleteProjectBtn.id === projectId){
-                    console.log(userToken);
                     fetch(`http://localhost:5678/api/works/${projectId}`, {
                         method: 'DELETE',
-                        headers : {"Authorization": `Bearer ${userToken}`
+                        headers : {'Authorization': `Bearer ${userToken}`
                         }
                     }
                     )
-                    .then(res => {
-                        if (res.ok){
+                    .then(projectDeleted => {
+                        if (projectDeleted.ok){
                             figure.remove();
                         }
                     })
@@ -153,11 +152,13 @@ function generateEditingHeader (){
 }
 
 function generateEditLinks (){
-    const modalLinkBox = document.querySelector(".open-modal-link");
-    const modalLink = document.createElement("a");
-    modalLink.setAttribute("class","modal-link");
-    modalLink.innerHTML = '<i class="fa-regular fa-pen-to-square"></i>modifier';
-    modalLinkBox.appendChild(modalLink);
+    const modalLinkBox = document.getElementsByClassName("open-modal-link");
+    [...modalLinkBox].forEach((box) => {
+	    const modalLink = document.createElement("a");
+	    modalLink.classList.add("modal-link");
+	    modalLink.innerHTML = '<i class="fa-regular fa-pen-to-square"></i>modifier';
+	    box.appendChild(modalLink);
+});
 }
 
 function logout (){
@@ -181,14 +182,18 @@ function loadEditingMode (){
 
 function loadModal (){
     const modalWindow = document.getElementsByClassName("modal-window")[0];
-    const openModal = document.getElementsByClassName("modal-link")[0];
-    const closeModal = document.getElementsByClassName("close-modal")[0];
-    openModal.onclick = () => {
-        modalWindow.style.display = "flex";
-    }
-    closeModal.onclick = () => {
-        modalWindow.style.display = "none";
-    }
+    const openModal = document.getElementsByClassName("modal-link");
+    const closeModal = document.getElementsByClassName("close-modal");
+    [...openModal].forEach((link) => {
+	link.addEventListener("click", () => {
+	        modalWindow.style.display = "flex";
+	    })
+    });
+    [...closeModal].forEach((link) => {
+        link.addEventListener("click", () => {
+                modalWindow.style.display = "none";
+            })
+        });
 }
 
 
@@ -207,4 +212,45 @@ if (userToken) {
         modal2.style.display = "none"
         modal1.style.display = "block"
     }
+    document.getElementById("new-project-file").onchange = (photoupload) => {
+        const newProjectImage = document.getElementById("new-project-file").files[0];
+        if (newProjectImage){
+            const defaultPhoto = document.getElementById("default-photo");
+            const newProjectText = document.getElementById("file-upload-text");
+            const newProjectImageSize = document.getElementById("file-upload-max-size");
+            newProjectText.style.display = "none";
+            newProjectImageSize.style.display = "none";
+            defaultPhoto.src = URL.createObjectURL(newProjectImage);
+        }
+    }
+    document.getElementsByClassName("new-project")[0].addEventListener("submit", function (event){
+        event.preventDefault();
+        const newProjectImage = document.getElementById("new-project-file").files[0];
+        const newProjectTitle = document.getElementById("photo-title-input").value;
+        const newProjectCategory = document.getElementById("category-dropd").value;
+        if (!newProjectImage || !newProjectTitle || !newProjectCategory){
+            const newProjectError = document.getElementsByClassName("form-error-message")[0];
+            newProjectError.textContent = "Veuillez remplir tous les champs!"
+        } else if (newProjectImage && newProjectTitle && newProjectCategory){
+            const newProject = document.getElementsByClassName("new-project")[0];
+            const newProjectSubmit = document.getElementsByClassName("add-photos-confirm")[0];
+            newProjectSubmit.style.backgroundColor = "#1D6154"
+            newProjectSubmit.style.color = "white"
+            newProjectSubmit.onclick = (event) => {
+                event.preventDefault();
+                newProject.submit();
+            }
+            const newProjectData = new FormData(newProject);
+            fetch("http://localhost:5678/api/works", {
+                method: 'POST',
+                body: newProjectData,
+                headers: {
+                    "accept": "application/json",
+                    "Authorization": `Bearer ${userToken}`
+                }
+            })
+            .then(res => res.json())
+        }
+        generateGallery();
+    })
 }
