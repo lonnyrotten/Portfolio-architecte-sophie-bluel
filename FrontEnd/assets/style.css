@@ -137,10 +137,16 @@ nav li {
 	padding: 0 10px;
 	font-size: 1.2em;
 }
+
+#logout {
+	display: none;
+}
+
 a {
 	text-decoration:none;
 	color: black;
 }
+
 li:hover,a:hover {
 	color: #B1663C;
 }
@@ -345,7 +351,7 @@ li:hover,a:hover {
 #introduction figure {
 	flex: 1
 }
-#introduction img {
+#introduction img, #introduction figcaption {
 	display: block;
 	margin: auto;
 	width: 80%;

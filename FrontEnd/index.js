@@ -4,6 +4,8 @@ const boutonTous = document.getElementsByClassName("btn-tous")[0];
 const hiddenGallery = document.getElementsByClassName("trash-div")[0];
 const modalGallery = document.getElementsByClassName("modal-body")[0];
 const userToken = sessionStorage.getItem("sessionUserInfo");
+const loginLink = document.getElementById("login");
+const logoutLink = document.getElementById("logout");
 
 async function getWorks() {
     const url = "http://localhost:5678/api/works" ;
@@ -67,7 +69,7 @@ async function generateGallery(){
 	        deleteProjectBtn.setAttribute("id", figure.id);
 	        figure.appendChild(moveProjectBtn);
 	        figure.appendChild(deleteProjectBtn);
-            deleteProjectBtn.onclick = async () => {
+            deleteProjectBtn.onclick = async function deleteWork(){
                 const projectId = figure.id
                 if (deleteProjectBtn.id === projectId){
                     fetch(`http://localhost:5678/api/works/${projectId}`, {
@@ -162,14 +164,14 @@ function generateEditLinks (){
 }
 
 function logout (){
-    sessionStorage.removeItem(userToken);
+    sessionStorage.clear();
+    loginLink.style.display = "none";
+    logoutLink.style.display = "block";
     window.location.reload;
 }
 
-function logoutLink (){
-    const logLink = document.getElementById("login/logout");
-    logLink.innerHTML = "logout";
-    logLink.addEventListener("click", logout());
+function logoutBtn (){
+    logoutLink.addEventListener("click", logout());
 }
 
 function loadEditingMode (){
@@ -177,7 +179,7 @@ function loadEditingMode (){
     filterBox.style.display = "none";
     generateEditingHeader();
     generateEditLinks();
-    logoutLink();
+    logoutBtn();
 }
 
 function loadModal (){
@@ -231,6 +233,7 @@ if (userToken) {
         if (!newProjectImage || !newProjectTitle || !newProjectCategory){
             const newProjectError = document.getElementsByClassName("form-error-message")[0];
             newProjectError.textContent = "Veuillez remplir tous les champs!"
+            return false
         } else if (newProjectImage && newProjectTitle && newProjectCategory){
             const newProject = document.getElementsByClassName("new-project")[0];
             const newProjectSubmit = document.getElementsByClassName("add-photos-confirm")[0];
@@ -252,5 +255,6 @@ if (userToken) {
             .then(res => res.json())
         }
         generateGallery();
+        return false
     })
 }
