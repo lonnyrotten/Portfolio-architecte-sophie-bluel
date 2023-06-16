@@ -22,11 +22,11 @@ async function loginSubmit(event) {
         } else if (response.status !== 200 && email && password) {
             console.log("error");
             document.querySelector(".error-message").innerHTML = "Erreur dans l'identifiant ou le mot de passe."
-        }
-    })
-    .then((userInfo) => {
-        sessionStorage.setItem("sessionUserInfo", userInfo.token);
-        window.location.href="index.html";
-    })
-}
+         }
+     })
+     .then((userInfo) => {
+         sessionStorage.setItem("sessionUserInfo", userInfo.token);
+         window.location.href="index.html";
+     })
+ }
 loginBox.addEventListener("submit", loginSubmit);

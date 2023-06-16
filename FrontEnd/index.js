@@ -69,10 +69,10 @@ async function generateGallery(){
 	        deleteProjectBtn.setAttribute("id", figure.id);
 	        figure.appendChild(moveProjectBtn);
 	        figure.appendChild(deleteProjectBtn);
-            deleteProjectBtn.onclick = async function deleteWork(){
-                const projectId = figure.id
-                if (deleteProjectBtn.id === projectId){
-                    fetch(`http://localhost:5678/api/works/${projectId}`, {
+            deleteProjectBtn.onclick = function deleteWork(){
+                const modalProjectId = figure.id
+                if (deleteProjectBtn.id === modalProjectId){
+                    fetch(`http://localhost:5678/api/works/${modalProjectId}`, {
                         method: 'DELETE',
                         headers : {'Authorization': `Bearer ${userToken}`
                         }
@@ -80,14 +80,17 @@ async function generateGallery(){
                     )
                     .then(projectDeleted => {
                         if (projectDeleted.ok){
+                            const projectToDelete = document.getElementById(modalProjectId);
                             figure.remove();
+                            projectToDelete.remove();
+                            hiddenGallery.append(...modalGallery.childNodes);
+                            generateGallery();
                         }
                     })
                 }
             }
         });
         modalGallery.appendChild(clonedGallery);
-        
     }
     generateModalGallery();
 }
@@ -163,15 +166,11 @@ function generateEditLinks (){
 });
 }
 
-function logout (){
-    sessionStorage.clear();
-    loginLink.style.display = "none";
-    logoutLink.style.display = "block";
-    window.location.reload;
-}
-
 function logoutBtn (){
-    logoutLink.addEventListener("click", logout());
+    logoutLink.addEventListener("click", () => {
+        sessionStorage.removeItem("sessionUserInfo");
+        window.location.reload;
+    });
 }
 
 function loadEditingMode (){
@@ -196,10 +195,31 @@ function loadModal (){
                 modalWindow.style.display = "none";
             })
         });
+    window.onclick = function(event) {
+        if (event.target == modalWindow) {
+            modalWindow.style.display = "none";
+        }
+        }
+}
+
+function createNewProject (data){
+    const newProjectElement = document.createElement("figure");
+    const imageNewProject = document.createElement("img");
+    imageNewProject.src = data.imageUrl;
+    const newProjectCaption = document.createElement("figcaption");
+    newProjectCaption.innerText = data.title;
+    newProjectElement.setAttribute("class", "project")
+    newProjectElement.setAttribute("id", data.id);
+    newProjectElement.setAttribute("data-category", data.categoryId)
+    newProjectElement.appendChild(imageNewProject);
+    newProjectElement.appendChild(newProjectCaption);
+    projectGallery.appendChild(newProjectElement);
 }
 
 
 if (userToken) {
+    loginLink.style.display = "none";
+    logoutLink.style.display = "block";
     loadEditingMode();
     loadModal();
     const modal1 = document.getElementsByClassName("modal-wrapper")[0];
@@ -240,8 +260,7 @@ if (userToken) {
             newProjectSubmit.style.backgroundColor = "#1D6154"
             newProjectSubmit.style.color = "white"
             newProjectSubmit.onclick = (event) => {
-                event.preventDefault();
-                newProject.submit();
+                newProject.submit(event);
             }
             const newProjectData = new FormData(newProject);
             fetch("http://localhost:5678/api/works", {
@@ -252,9 +271,12 @@ if (userToken) {
                     "Authorization": `Bearer ${userToken}`
                 }
             })
-            .then(res => res.json())
+            .then(data => {
+            createNewProject(data.json())
+            hiddenGallery.append(...modalGallery.childNodes);
+            generateGallery();
+            })
         }
-        generateGallery();
         return false
     })
 }
